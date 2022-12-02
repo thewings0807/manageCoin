@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -34,7 +35,7 @@ class CoinApplicationTests {
 
     ObjectMapper mapper = new ObjectMapper();
 
-    String code = "NTD";
+    String code = "KRW";
 
     @Autowired
     private MockMvc mvc; //創建MockMvc類的物件
@@ -43,11 +44,11 @@ class CoinApplicationTests {
     void addCoin() throws Exception {
         CoinRequest request = new CoinRequest();
         request.setCode(code);
-        request.setName("新台幣");
-        request.setSymbol("&ntd");
+        request.setName("韓元");
+        request.setSymbol("&krw");
         request.setRate("30.1568");
         request.setRateFloat(30.1568);
-        request.setDescription("new taiwan dollar");
+        request.setDescription("korean dollar");
 
         mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
@@ -58,24 +59,22 @@ class CoinApplicationTests {
 
     @Test
     void getCoin() throws Exception {
-
-//        ResultActions resultActions = mvc.perform(get("/coin/get").param("code", this.code))
-//                .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON));
-
-        this.addCoin();
-        CoinResponse response = coinService.getCoin(code);
-        System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response));
+        MvcResult result = mvc.perform(get("/coin/get").param("code",code))
+                .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON)).andReturn();
+        System.out.println(result.getResponse().getContentAsString());
     }
 
     @Test
     void updateCoin() throws Exception {
+        this.addCoin();
+
         CoinRequest request = new CoinRequest();
         request.setCode(code);
-        request.setName("新台幣");
-        request.setSymbol("&ntd");
+        request.setName("韓元");
+        request.setSymbol("&krw");
         request.setRate("31.5562");
         request.setRateFloat(31.5562);
-        request.setDescription("new taiwan dollar");
+        request.setDescription("korean dollar");
 
         mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
@@ -87,8 +86,9 @@ class CoinApplicationTests {
     }
 
     @Test
-    void deleteCoin() throws NoDataException {
-        coinService.deleteCoin(code);
+    void deleteCoin() throws Exception {
+        mvc.perform(delete("/coin/delete").param("code",code))
+                .andExpect(status().isOk());
     }
 
     @Test
