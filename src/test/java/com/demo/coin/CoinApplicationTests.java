@@ -1,10 +1,8 @@
 package com.demo.coin;
 
 import com.demo.coin.controller.CoinController;
-import com.demo.coin.controller.exception.NoDataException;
 import com.demo.coin.repository.CoinRepository;
 import com.demo.coin.request.CoinRequest;
-import com.demo.coin.response.CoinResponse;
 import com.demo.coin.service.CoinService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -23,7 +21,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @WebMvcTest(CoinController.class)
 class CoinApplicationTests {
 
@@ -66,8 +63,6 @@ class CoinApplicationTests {
 
     @Test
     void updateCoin() throws Exception {
-        this.addCoin();
-
         CoinRequest request = new CoinRequest();
         request.setCode(code);
         request.setName("韓元");
